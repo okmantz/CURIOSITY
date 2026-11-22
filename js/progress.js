@@ -4,7 +4,7 @@
 (function () {
   const C = (window.CUR = window.CUR || {});
   const P = (C.progress = {});
-  const FORMAT_COUNT = Object.keys(C.FORMATS).length - 1; // recall is not counted
+  const FORMAT_COUNT = Object.keys(C.FORMATS).length - 2; // recall and drill are generated, not counted
 
   function addXP(n, topic) {
     C.store.update((s) => { s.xp += n; if (topic) C.store.tp(topic).xp += n; const a = s.activity[C.dateKey()] || (s.activity[C.dateKey()] = { done: 0, xp: 0, topics: [] }); a.xp += n; });
@@ -148,7 +148,27 @@
     'long-memory': (s) => s.stats.recallCorrect >= 10,
     'full-spectrum': (s) => s.stats.formats.length >= FORMAT_COUNT,
     cartographer: () => P.litEdges() >= 8,
-    sharer: (s) => s.stats.shares >= 1
+    sharer: (s) => s.stats.shares >= 1,
+    'first-hole': (s) => holePaths(s) >= 1,
+    'deep-diver': (s) => Object.keys(s.holes).some((id) => { const hl = C.holes && C.holes.get(id); return hl && hl.paths.every((p) => s.holes[id].paths && s.holes[id].paths[p.id]); }),
+    'hole-wanderer': (s) => holePaths(s) >= 25,
+    'mirror-gazer': (s) => s.mirror.log.length >= 10,
+    'mirror-keeper': (s) => s.mirror.log.length >= 50,
+    'atlas-first': (s) => s.atlasMeta.sessions >= 1,
+    'atlas-500': (s) => s.atlasMeta.total >= 500,
+    'atlas-all': (s) => C.TOPICS.every((t) => s.topic[t.id] && s.topic[t.id].atlas)
+  };
+  function holePaths(s) { return Object.values(s.holes).reduce((a, x) => a + Object.keys(x.paths || {}).length, 0); }
+  /* Called by js/atlas.js when a session finishes. */
+  P.atlasDone = function (topic) {
+    C.store.update((s) => { s.atlasMeta.sessions = (s.atlasMeta.sessions || 0) + 1; if (topic) C.store.tp(topic).atlas = true; });
+    P.check();
+  };
+  /* Called by js/holes.js when a path is finished. Returns XP awarded. */
+  P.holePath = function (hole, path, first) {
+    const gain = first ? 6 : 1;
+    addXP(gain, hole.topic); P.check();
+    return gain;
   };
   P.check = function () {
     const s = C.store.state, fresh = [];
@@ -164,7 +184,7 @@
     const n = {
       'three-days': [s.streak.best, 3], 'week-streak': [s.streak.best, 7], polymath: [Object.values(s.topic).filter((t) => t.done > 0).length, 6], renaissance: [Object.values(s.topic).filter((t) => t.done > 0).length, 12],
       reflective: [s.stats.reflections, 5], journal: [s.stats.reflections, 20], 'both-sides': [s.stats.debates, 3], 'long-memory': [s.stats.recallCorrect, 10], 'full-spectrum': [s.stats.formats.length, FORMAT_COUNT],
-      cartographer: [P.litEdges(), 8], wayfarer: [Object.values(s.journeys).filter((j) => j.completedAt).length, 3], 'daily-ritual': [s.stats.dailyJourneys, 3]
+      cartographer: [P.litEdges(), 8], wayfarer: [Object.values(s.journeys).filter((j) => j.completedAt).length, 3], 'daily-ritual': [s.stats.dailyJourneys, 3], 'hole-wanderer': [holePaths(s), 25], 'mirror-gazer': [s.mirror.log.length, 10], 'mirror-keeper': [s.mirror.log.length, 50], 'atlas-500': [s.atlasMeta.total, 500]
     }[a.id];
     return n ? Math.min(n[0], n[1]) + ' / ' + n[1] : null;
   };

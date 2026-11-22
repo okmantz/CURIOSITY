@@ -38,6 +38,10 @@
     });
     root.append(h('div', { class: 'search-wrap' }, C.icon('search', 18), input), results);
 
+    root.append(h('h2', { class: 'sec', text: 'Go deeper' }), h('div', { class: 'doors' },
+      h('a', { class: 'door', href: '#/holes' }, h('span', { class: 'door-ic' }, C.icon('hole', 22)), h('div', { class: 'door-main' }, h('span', { class: 'kicker', text: 'Rabbit Holes' }), h('b', { text: 'One idea, many ways in' }), h('span', { class: 'fine', text: 'Original sources, interactives, objections and modern echoes for every idea.' })), C.icon('right', 18)),
+      h('a', { class: 'door', href: '#/atlas' }, h('span', { class: 'door-ic' }, C.icon('atlas', 22)), h('div', { class: 'door-main' }, h('span', { class: 'kicker', text: 'The Atlas' }), h('b', { text: C.atlas ? C.atlas.questions().toLocaleString('en-US') + ' questions across 12 subjects' : 'Questions across 12 subjects' }), h('span', { class: 'fine', text: 'Generated from fact tables: dates, people, places, ideas. Study or play.' })), C.icon('right', 18)),
+      h('a', { class: 'door', href: '#/mirror' }, h('span', { class: 'door-ic' }, C.icon('mirror', 22)), h('div', { class: 'door-main' }, h('span', { class: 'kicker', text: 'The Mirror' }), h('b', { text: 'How you reason' }), h('span', { class: 'fine', text: 'Questions about your thinking, never about whether you are right.' })), C.icon('right', 18))));
     root.append(h('h2', { class: 'sec', text: 'Subjects' }), h('div', { class: 'tiles' }, ...C.TOPICS.map(V.topicTile)));
 
     root.append(h('h2', { class: 'sec', text: 'Curated collections' }),
@@ -45,7 +49,7 @@
         h('b', { text: c.title }), h('span', { class: 'fine', text: c.blurb }), h('span', { class: 'fine', text: c.ids.length + ' experiences' })))));
 
     root.append(h('h2', { class: 'sec', text: 'Browse by format' }),
-      h('div', { class: 'fmt-grid' }, ...Object.entries(C.FORMATS).filter(([k]) => k !== 'recall').map(([k, f]) =>
+      h('div', { class: 'fmt-grid' }, ...Object.entries(C.FORMATS).filter(([k]) => k !== 'recall' && k !== 'drill').map(([k, f]) =>
         h('a', { class: 'fmt-card', href: '#/play/format/' + k }, h('b', { text: f.name }), h('span', { class: 'fine', text: f.blurb })))));
 
     // Thinkers to follow

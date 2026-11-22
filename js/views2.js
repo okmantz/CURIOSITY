@@ -86,6 +86,7 @@
         h('div', { class: 'stat' }, h('b', { text: String(Object.values(s.topic).filter((t) => t.done > 0).length) }), h('span', { text: 'subjects' })),
         h('div', { class: 'stat' }, h('b', { text: ret == null ? '—' : ret + '%' }), h('span', { text: 'retention' })))));
 
+    if (V.mirrorSummary) root.append(V.mirrorSummary());
     root.append(h('h2', { class: 'sec', text: 'This week' }), h('div', { class: 'card-panel goals' },
       ring(wk.done / wk.goal, 110, wk.done + '/' + wk.goal, 'experiences'), ring(wk.topics / wk.topicGoal, 110, wk.topics + '/' + wk.topicGoal, 'subjects', 'var(--accent2)'),
       h('p', { class: 'fine', text: 'Weekly goals reward range as well as volume. Adjust them in Profile.' })));
@@ -154,7 +155,7 @@
         C.tpl.kit.btn('Import backup', () => fileIn.click(), 'ghost'), fileIn,
         C.tpl.kit.btn('Replay welcome', () => { C.onboarding(true); }, 'ghost'),
         C.tpl.kit.btn('Reset everything', () => { if (confirm('Erase all progress, saves and settings on this device?')) { C.store.reset(); C.app.applyTheme(); location.hash = '#/discover'; location.reload(); } }, 'danger'))));
-    root.append(h('p', { class: 'fine center', text: 'CURIOSITY v' + C.version + '. Content is original and hand-written; passages quoted are in the public domain.' }));
+    root.append(h('p', { class: 'fine center', text: 'CURIOSITY v' + C.version + '. Rabbit Holes, experiences and fact tables are original and hand-written; Atlas questions are generated from those tables. Quoted passages are in the public domain.' }));
     return root;
   };
 

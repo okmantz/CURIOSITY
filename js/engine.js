@@ -91,6 +91,12 @@
         const due = E.dueRecalls().filter((id) => !exclude.has('recall:' + id));
         if (due.length) { const rc = C.makeRecall(due[0]); exclude.add(rc.id); out.push({ exp: rc, why: 'review' }); recent.push(rc); continue; }
       }
+      // quickfire slot: a short generated Atlas drill, now and then, in the main feed only
+      if (opts.includeRecall && i === 4 && C.makeDrill && Math.random() < 0.5 && !out.some((o) => o.exp.type === 'drill')) {
+        const tpc = out.length ? out[out.length - 1].exp.topic : C.pick(C.TOPICS).id;
+        const dr = C.makeDrill(tpc, C.dateKey() + ':' + Math.floor(Math.random() * 1e6));
+        if (dr) { out.push({ exp: dr, why: 'drill' }); continue; }
+      }
       let cand = fresh();
       let why = 'for-you';
       if (!cand.length) {

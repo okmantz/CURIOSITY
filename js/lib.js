@@ -34,6 +34,13 @@
   };
   C.resolve = function (id) {
     if (id && id.startsWith('recall:')) return C.makeRecall(id.slice(7));
+    if (id && id.startsWith('drill:') && C.atlas) {
+      const parts = id.split(':'), t = C.atlas.table(parts[1]);
+      if (!t) return null;
+      const d = C.makeDrill(t.topic, parts.slice(2).join(':'));
+      if (d) { d.tid = t.id; d.id = id; d.title = 'Quickfire: ' + t.title; }
+      return d;
+    }
     return C.byId[id];
   };
 

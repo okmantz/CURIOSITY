@@ -61,7 +61,7 @@
      * @param o     {why, mode, onComplete, onNext}
      */
     create(exp, o = {}) {
-      const t = C.topic(exp.topic), isRecall = exp.type === 'recall';
+      const t = C.topic(exp.topic), isRecall = exp.type === 'recall' || exp.type === 'drill', isDrill = exp.type === 'drill';
       const sid = isRecall ? exp.of : exp.id;
       const ex = isRecall ? { answers: {} } : C.store.ex(exp.id);
       const state = { begun: false, completed: false, interacted: false, tplNode: null, artDone: false };
@@ -86,7 +86,7 @@
         C.store.update(() => { const x = C.store.ex(sid); x.liked = !x.liked; spark.classList.toggle('on', x.liked); spark.setAttribute('aria-pressed', String(x.liked)); if (x.liked) C.engine.signal(exp.topic, 'like'); });
       } }, C.icon('spark', 24), h('span', { text: 'Spark' }));
       const save = h('button', { class: 'rail-btn' + (C.isSaved(sid) ? ' on' : ''), type: 'button', 'aria-label': 'Save', 'aria-pressed': String(C.isSaved(sid)), onclick: () => { const on = C.toggleSave(exp); save.classList.toggle('on', on); save.setAttribute('aria-pressed', String(on)); } }, C.icon('bookmark', 24), h('span', { text: 'Save' }));
-      const rail = h('aside', { class: 'rail' }, spark, save,
+      const rail = isDrill ? h('aside', { class: 'rail' }) : h('aside', { class: 'rail' }, spark, save,
         h('button', { class: 'rail-btn', type: 'button', 'aria-label': 'Reflect and discuss', onclick: () => C.discussSheet(exp) }, C.icon('chat', 24), h('span', { text: 'Think' })),
         h('button', { class: 'rail-btn', type: 'button', 'aria-label': 'Share', onclick: () => C.social.share(C.byId[sid]) }, C.icon('share', 24), h('span', { text: 'Share' })));
       const hint = h('div', { class: 'next-hint', 'aria-hidden': 'true' }, C.icon('down', 20));
@@ -102,7 +102,8 @@
           let gained = 0;
           if (!isRecall) { const r = C.progress.complete(exp, info); gained = r.gained; }
           el.classList.add('completed');
-          renderTakeaway(gained, info);
+          if (isDrill) { if (o.onNext) takeaway.hidden = false, takeaway.append(h('div', { class: 'row tk-actions' }, C.tpl.kit.btn(o.nextLabel || 'Next', () => o.onNext(), 'primary'))); }
+          else renderTakeaway(gained, info);
           o.onComplete && o.onComplete(exp, info);
         }
       };
@@ -117,7 +118,9 @@
         takeaway.append(
           h('div', { class: 'tk-head' }, C.tpl.kit.kicker('Takeaway'), gained ? h('span', { class: 'xp-chip', text: '+' + gained + ' insight' }) : null),
           h('p', { class: 'tk-text', text: src.takeaway }),
+          C.holes ? C.holes.takeawayBlock(sid) : null,
           h('div', { class: 'tk-q' }, h('b', { text: 'Think it over' }), h('p', { text: src.prompt }), ta),
+          C.mirror ? C.mirror.card({ id: sid, topic: src.topic, title: src.title, claim: src.takeaway }) : null,
           (src.links || []).length ? h('div', { class: 'tk-links' }, h('span', { class: 'fine', text: 'Connects to' }), ...src.links.map((l) => h('a', { class: 'chip link', href: '#/explore/topic/' + l, text: C.topic(l).short }))) : null,
           related.length ? h('div', { class: 'tk-more' }, h('span', { class: 'fine', text: 'Go further' }), ...related.map((r) => h('a', { class: 'more-link', href: '#/x/' + r.id }, h('b', { text: r.title }), h('span', { text: C.FORMATS[r.type].name + ' · ' + r.mins + ' min' })))) : null,
           h('div', { class: 'row tk-actions' },

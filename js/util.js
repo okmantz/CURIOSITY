@@ -32,6 +32,9 @@
 
   const P = {
     spark: '<path d="M12 3c.6 4.6 2.4 6.4 7 7-4.6.6-6.4 2.4-7 7-.6-4.6-2.4-6.4-7-7 4.6-.6 6.4-2.4 7-7z"/>',
+    hole: '<ellipse cx="12" cy="7" rx="7" ry="3"/><path d="M5 7v4c0 1.7 3.1 3 7 3s7-1.3 7-3V7M8 14v3c0 1.1 1.8 2 4 2s4-.9 4-2v-3"/>',
+    atlas: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+    mirror: '<ellipse cx="12" cy="11" rx="6" ry="8"/><path d="M12 19v3M8 22h8M9 8c1-1 2-1.5 3-1.5"/>',
     bookmark: '<path d="M6 4h12v17l-6-4-6 4z"/>',
     share: '<path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 002 2h10a2 2 0 002-2v-6"/>',
     chat: '<path d="M4 5h16v11H9l-5 4z"/>',

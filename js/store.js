@@ -25,6 +25,10 @@
     achievements: {}, // id -> ts
     stats: { reflections: 0, recallCorrect: 0, recallTotal: 0, mindChanges: 0, shares: 0, debates: 0, dailyJourneys: 0, formats: [], pairs: [] },
     lastFormats: [],
+    atlas: {},        // per fact table: {p, ep, right, seen, miss}
+    atlasMeta: { day: null, xp: 0, total: 0, right: 0 },
+    mirror: { log: [], day: null, xp: 0, shifts: 0, revisits: 0 },
+    holes: {},        // per hole: {seen, paths:{pathId:ts}, first}
     sessions: 0,
     lastSeenDay: null
   });

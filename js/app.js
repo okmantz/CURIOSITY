@@ -118,6 +118,14 @@
       const p = C.engine.dailyPicks();
       mountFeed({ ids: p.journey.map((e) => e.id), startAt: +m[1], nextLabel: 'Next', endCard: endCard('That is today’s journey', 'A small daily habit compounds. See you tomorrow, or keep scrolling now.', h('a', { class: 'btn primary', href: '#/discover' }, 'Keep exploring'), h('a', { class: 'btn ghost', href: '#/daily' }, 'Back to Today')) }, 'Daily journey', '#/daily', 'daily');
     }],
+    [/^#\/atlas$/, () => page(V.atlasHome(), 'explore')],
+    [/^#\/atlas\/topic\/(\w+)$/, (m) => page(V.atlasTopic(m[1]), 'explore')],
+    [/^#\/atlas\/table\/([\w-]+)$/, (m) => page(V.atlasStudy(m[1]), 'explore')],
+    [/^#\/atlas\/play\/(table|topic|mixed)\/([\w-]+)$/, (m) => page(V.atlasPlay(m[1], m[2]), 'explore')],
+    [/^#\/holes$/, () => page(V.holes(), 'explore')],
+    [/^#\/hole\/([\w-]+)$/, (m) => page(V.hole(m[1]), 'explore')],
+    [/^#\/hole\/([\w-]+)\/([\w-]+)$/, (m) => page(V.holePath(m[1], m[2]), 'explore')],
+    [/^#\/mirror$/, () => page(V.mirror(), 'mind')],
     [/^#\/profile$/, () => page(V.profile(), 'profile')],
     [/^#\/x\/([\w:-]+)$/, (m) => {
       const e = C.resolve(m[1]); if (!e) return page(V.notFound(), 'discover');

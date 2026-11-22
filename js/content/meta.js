@@ -17,6 +17,7 @@
     { id: 'wisdom', name: 'Practical Wisdom & Communication', short: 'Wisdom', color: '#8ec1f0', motif: 'horizon', blurb: 'Exercises to turn insight into daily practice.' }
   ];
 
+  C.version = '2.0.0';
   C.FORMATS = {
     thought: { name: 'Thought Experiment', verb: 'Decide', blurb: 'A dilemma to choose in, then see how great thinkers would respond.' },
     history: { name: 'Interactive History', verb: 'Decide', blurb: 'Make the call at a turning point, then see what really happened.' },
@@ -31,7 +32,8 @@
     predict: { name: 'Predict & Reveal', verb: 'Predict', blurb: 'Guess first, then discover how well your intuition did.' },
     spot: { name: 'Spot the Flaw', verb: 'Spot', blurb: 'Rapid-fire reasoning errors to catch.' },
     layers: { name: 'Layered Deep Dive', verb: 'Dig', blurb: 'Make a guess, then peel back layer after layer.' },
-    recall: { name: 'Memory Check', verb: 'Recall', blurb: 'A quick retrieval of something you explored earlier.' }
+    recall: { name: 'Memory Check', verb: 'Recall', blurb: 'A quick retrieval of something you explored earlier.' },
+    drill: { name: 'Quickfire Atlas', verb: 'Quickfire', blurb: 'A short run of generated questions from the Atlas.' }
   };
 
   C.JOURNEYS = [
@@ -83,7 +85,15 @@
     { id: 'long-memory', name: 'Long Memory', desc: 'Answer 10 memory checks correctly.', icon: 'brain' },
     { id: 'full-spectrum', name: 'Full Spectrum', desc: 'Try every one of the 13 formats.', icon: 'grid' },
     { id: 'cartographer', name: 'Cartographer', desc: 'Light up 8 connections on your knowledge map.', icon: 'map' },
-    { id: 'sharer', name: 'Pass It On', desc: 'Share a discovery.', icon: 'share' }
+    { id: 'sharer', name: 'Pass It On', desc: 'Share a discovery.', icon: 'share' },
+    { id: 'first-hole', name: 'Down the Hole', desc: 'Finish your first Rabbit Hole path.', icon: 'hole' },
+    { id: 'deep-diver', name: 'Deep Diver', desc: 'Fully explore every path of one Rabbit Hole.', icon: 'hole' },
+    { id: 'hole-wanderer', name: 'Hole Wanderer', desc: 'Finish 25 Rabbit Hole paths.', icon: 'hole' },
+    { id: 'mirror-gazer', name: 'Mirror Gazer', desc: 'Answer 10 Mirror questions.', icon: 'mirror' },
+    { id: 'mirror-keeper', name: 'Self-Examiner', desc: 'Answer 50 Mirror questions.', icon: 'mirror' },
+    { id: 'atlas-first', name: 'Atlas Opened', desc: 'Finish your first Atlas session.', icon: 'atlas' },
+    { id: 'atlas-500', name: 'Five Hundred Answers', desc: 'Answer 500 Atlas questions.', icon: 'atlas' },
+    { id: 'atlas-all', name: 'Whole Atlas', desc: 'Finish an Atlas session in every subject.', icon: 'atlas' }
   ];
 
   C.LEVELS = [
