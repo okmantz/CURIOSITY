@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>CURIOSITY: the social feed for your mind</title>
+  <meta name="description" content="A TikTok-style vertical feed where every post is an interactive idea: thought experiments, history decisions, paradoxes, debates and more. Free, private, no account.">
+  <meta name="theme-color" content="#0b0b0e">
+  <meta property="og:title" content="CURIOSITY: scroll to think">
+  <meta property="og:description" content="An endless, personalised feed of interactive ideas. Thought experiments, history decisions, paradoxes and debates.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    // Apply the saved theme before first paint to avoid a flash.
+    try {
+      var s = JSON.parse(localStorage.getItem('curiosity.v1') || '{}'), t = (s.prefs && s.prefs.theme) || 'dark';
+      var dark = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      if (s.prefs && s.prefs.reduceMotion) document.documentElement.dataset.motion = 'reduce';
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <div id="app" class="app" aria-live="off"></div>
+  <noscript><div class="noscript"><h1>CURIOSITY</h1><p>This app needs JavaScript to run. Nothing is sent anywhere. Everything happens in your browser.</p></div></noscript>
+  <script src="js/util.js" defer></script>
+  <script src="js/content/meta.js" defer></script>
+  <script src="js/content/thought.js" defer></script>
+  <script src="js/content/reasoning.js" defer></script>
+  <script src="js/content/explore.js" defer></script>
+  <script src="js/content/practice.js" defer></script>
+  <script src="js/store.js" defer></script>
+  <script src="js/social.js" defer></script>
+  <script src="js/lib.js" defer></script>
+  <script src="js/engine.js" defer></script>
+  <script src="js/progress.js" defer></script>
+  <script src="js/templates1.js" defer></script>
+  <script src="js/templates2.js" defer></script>
+  <script src="js/templates3.js" defer></script>
+  <script src="js/card.js" defer></script>
+  <script src="js/feed.js" defer></script>
+  <script src="js/views.js" defer></script>
+  <script src="js/views2.js" defer></script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
