@@ -1,5 +1,5 @@
 /* Offline support: cache the app shell, serve cache-first, refresh in the background. */
-const VERSION = 'curiosity-v2.0.0';
+const VERSION = 'curiosity-v2.1.0';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/styles.css', 'assets/favicon.svg',
   'assets/icons/icon-192.png', 'assets/icons/icon-512.png',

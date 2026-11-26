@@ -22,7 +22,7 @@
     const m = C.progress.masteryInfo(t.id);
     const art = h('div', { class: 'tile-art', html: C.art({ id: 'tile-' + t.id, topic: t.id }) });
     return h('a', { class: 'tile', href: '#/explore/topic/' + t.id, style: { '--accent': t.color } }, art,
-      h('div', { class: 'tile-body' }, h('b', { text: t.short }), h('span', { class: 'fine', text: done + ' / ' + total + ' · ' + m.name })));
+      h('div', { class: 'tile-body' }, h('b', { text: t.short }), h('span', { class: 'fine', text: done + ' / ' + total + ' · ' + m.name }), V.progressBar(total ? done / total : 0)));
   };
 
   /* ---------- Explore ---------- */

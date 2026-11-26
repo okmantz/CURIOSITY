@@ -190,7 +190,8 @@
           grid.append(b);
         });
         const count = h('span', { class: 'fine', text: sel.size + ' selected' });
-        body.append(grid, h('div', { class: 'row between' }, h('button', { class: 'btn ghost small', type: 'button', onclick: () => { sel.clear(); C.shuffle(C.TOPICS.map((t) => t.id)).slice(0, 4).forEach((x) => sel.add(x)); render(); } }, 'Surprise me'), count), btn);
+        body.append(grid, h('div', { class: 'row between' }, h('button', { class: 'btn ghost small', type: 'button', onclick: () => { sel.clear(); C.shuffle(C.TOPICS.map((t) => t.id)).slice(0, 4).forEach((x) => sel.add(x)); render(); } }, 'Surprise me'), count), btn,
+          h('button', { class: 'onb-skip', type: 'button', onclick: () => { sel.clear(); step = 2; render(); } }, 'Skip for now'));
       } else {
         body.append(h('h2', { class: 'onb-h', text: 'How deep do you like to go?' }));
         const seg1 = h('div', { class: 'opts' }, ...[[1, 'Casual', 'Short, clear, approachable'], [2, 'Curious', 'A balance of ease and challenge'], [3, 'Deep dive', 'Harder ideas and subtler arguments']].map(([v, l, d]) => h('button', { class: 'opt' + (depth === v ? ' chosen' : ''), type: 'button', onclick: () => { depth = v; render(); } }, h('span', { class: 'opt-text' }, h('b', { text: l }), h('br'), h('span', { class: 'fine', text: d })))));

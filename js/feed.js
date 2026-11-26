@@ -70,8 +70,12 @@
     }, { root: feed, threshold: [0.6] });
     const artIO = new IntersectionObserver((entries) => entries.forEach((en) => { if (en.isIntersecting) { const c = cards.find((x) => x.el === en.target); c && c.renderArt(); } }), { root: feed, rootMargin: '100% 0px' });
 
-    const hint = h('div', { class: 'swipe-hint', 'aria-hidden': 'true' }, C.icon('up', 18), h('span', { text: 'Swipe or scroll for the next idea' }));
-    const wrap = h('div', { class: 'feed-wrap' }, feed, hint);
+    const touch = window.matchMedia && matchMedia('(hover: none)').matches;
+    const hint = h('div', { class: 'swipe-hint', 'aria-hidden': 'true' }, C.icon('up', 18), h('span', { text: touch ? 'Swipe up for the next idea' : 'Scroll or press ↓ for the next idea' }));
+    const nav = h('div', { class: 'feed-nav' },
+      h('button', { type: 'button', 'aria-label': 'Previous idea', title: 'Previous (↑ or k)', onclick: () => goTo(Math.max(0, active - 1)) }, C.icon('up', 22)),
+      h('button', { type: 'button', 'aria-label': 'Next idea', title: 'Next (↓ or j)', onclick: () => goTo(Math.max(0, active) + 1) }, C.icon('down', 22)));
+    const wrap = h('div', { class: 'feed-wrap' }, feed, hint, nav);
 
     feed.addEventListener('keydown', (e) => {
       if (e.target.closest('input,textarea,select')) return;

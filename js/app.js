@@ -10,6 +10,7 @@
     ['mind', 'My Mind', 'brain'], ['daily', 'Daily', 'sun'], ['profile', 'Profile', 'user']
   ];
   const TABBAR = ['discover', 'explore', 'journeys', 'daily', 'mind'];
+  const SIDE_GROUPS = [['Learn', ['discover', 'explore', 'journeys', 'daily']], ['You', ['saved', 'mind', 'profile']]];
 
   /* ---------- Theme ---------- */
   A.applyTheme = function () {
@@ -17,7 +18,14 @@
     const dark = p.theme === 'dark' || (p.theme === 'auto' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
     document.documentElement.dataset.theme = dark ? 'dark' : 'light';
     document.documentElement.dataset.motion = p.reduceMotion ? 'reduce' : 'full';
-    const m = document.querySelector('meta[name=theme-color]'); if (m) m.setAttribute('content', dark ? '#0b0b0e' : '#f4f0e8');
+    const m = document.querySelector('meta[name=theme-color]'); if (m) m.setAttribute('content', dark ? '#08080b' : '#f7f3eb');
+    A.syncThemeBtn();
+  };
+  A.syncThemeBtn = function () {
+    if (!el.theme) return;
+    const dark = document.documentElement.dataset.theme === 'dark';
+    C.clear(el.theme).append(C.icon(dark ? 'sun' : 'moon', 22), h('span', { text: dark ? 'Light mode' : 'Dark mode' }));
+    el.theme.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
   };
   if (window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => A.applyTheme());
 
@@ -26,10 +34,14 @@
   A.buildChrome = function () {
     const root = document.getElementById('app');
     C.clear(root);
+    const byId = {}; NAV.forEach((n) => { byId[n[0]] = n; });
+    const navLink = (id) => h('a', { class: 'nav-link', href: '#/' + id, dataset: { nav: id } }, C.icon(byId[id][2], 22), h('span', { text: byId[id][1] }));
+    el.theme = h('button', { class: 'nav-link', type: 'button', onclick: () => { C.store.update((s) => { s.prefs.theme = (document.documentElement.dataset.theme === 'dark') ? 'light' : 'dark'; }); A.applyTheme(); } });
     el.side = h('aside', { class: 'sidebar', 'aria-label': 'Primary' },
       h('a', { class: 'brand', href: '#/discover', 'aria-label': 'CURIOSITY home' }, C.logo(30), h('span', { class: 'wordmark', text: 'CURIOSITY' })),
-      h('nav', { class: 'side-nav' }, ...NAV.map(([id, label, ic]) => h('a', { class: 'nav-link', href: '#/' + id, dataset: { nav: id } }, C.icon(ic, 22), h('span', { text: label })))),
-      h('div', { class: 'side-foot' }, h('div', { class: 'side-level' }), h('button', { class: 'nav-link ghost', type: 'button', onclick: () => { const t = C.store.state.prefs.theme; C.store.update((s) => { s.prefs.theme = (document.documentElement.dataset.theme === 'dark') ? 'light' : 'dark'; }); A.applyTheme(); } }, C.icon('moon', 22), h('span', { text: 'Toggle theme' }))));
+      h('nav', { class: 'side-nav' }, ...SIDE_GROUPS.map(([label, ids]) => [h('div', { class: 'nav-label', text: label }), ...ids.map(navLink)])),
+      h('div', { class: 'side-foot' }, h('a', { class: 'side-level', href: '#/mind', 'aria-label': 'Your level' }), el.theme));
+    A.syncThemeBtn();
     el.top = h('header', { class: 'topbar' },
       h('a', { class: 'brand compact', href: '#/discover', 'aria-label': 'CURIOSITY home' }, C.logo(26)),
       h('div', { class: 'top-center' }),
@@ -50,16 +62,20 @@
     el.top.querySelector('.streak b').textContent = String(st.current);
     el.top.querySelector('.streak').classList.toggle('lit', st.today);
     const sl = el.side.querySelector('.side-level');
-    C.clear(sl).append(h('span', { class: 'fine', text: 'Level ' + (lv.idx + 1) + ' · ' + lv.name }), V.progressBar(lv.pct, 'var(--gold)'));
+    C.clear(sl).append(h('span', { class: 'fine', text: 'Level ' + (lv.idx + 1) }), h('b', { text: lv.name }), V.progressBar(lv.pct, 'var(--gold)'));
     // right rail
     const due = C.engine.dueRecalls().length, picks = C.engine.dailyPicks(), d = C.store.state.daily[C.dateKey()] || { journey: [] };
-    C.clear(el.right).append(
-      h('div', { class: 'rb-card' }, h('div', { class: 'kicker', text: 'Today' }), h('div', { class: 'rb-big' }, h('b', { text: String(act.done) }), h('span', { text: 'completed today' })),
+    const hr = new Date().getHours(), name = (C.store.state.profile.name || '').trim();
+    const greet = (hr < 5 ? 'Still up' : hr < 12 ? 'Good morning' : hr < 18 ? 'Good afternoon' : 'Good evening') + (name ? ', ' + name : '');
+    const cards = [
+      h('div', { class: 'rb-card' }, h('div', { class: 'kicker', text: greet }), h('div', { class: 'rb-big' }, h('b', { text: String(act.done) }), h('span', { text: act.done === 1 ? 'idea explored today' : 'ideas explored today' })),
         h('div', { class: 'fine', text: st.current + ' day streak · best ' + st.best })),
-      h('div', { class: 'rb-card' }, h('div', { class: 'kicker', text: 'This week' }), V.progressBar(wk.done / wk.goal), h('div', { class: 'fine', text: wk.done + ' / ' + wk.goal + ' experiences · ' + wk.topics + ' / ' + wk.topicGoal + ' subjects' })),
-      h('a', { class: 'rb-card link', href: '#/daily' }, h('div', { class: 'kicker', text: 'Daily journey' }), h('b', { text: d.complete ? 'Complete' : d.journey.length + ' of ' + picks.journey.length + ' done' }), h('span', { class: 'fine', text: d.complete ? 'Come back tomorrow.' : 'About 5 to 10 minutes' })),
-      due ? h('a', { class: 'rb-card link', href: '#/play/recall' }, h('div', { class: 'kicker', text: 'Memory' }), h('b', { text: due + ' check' + (due > 1 ? 's' : '') + ' due' }), h('span', { class: 'fine', text: 'Quick recall questions' })) : null,
-      A.deferredInstall ? h('button', { class: 'btn ghost small', type: 'button', onclick: () => { A.deferredInstall.prompt(); A.deferredInstall = null; } }, 'Install app') : null);
+      h('div', { class: 'rb-card' }, h('div', { class: 'kicker', text: 'This week' }), V.progressBar(wk.done / wk.goal, 'var(--gold)'), h('div', { class: 'fine', text: wk.done + ' / ' + wk.goal + ' experiences · ' + wk.topics + ' / ' + wk.topicGoal + ' subjects' })),
+      h('a', { class: 'rb-card', href: '#/daily' }, h('div', { class: 'kicker', text: 'Daily journey' }), h('b', { text: d.complete ? 'Complete' : d.journey.length + ' of ' + picks.journey.length + ' done' }), h('span', { class: 'fine', text: d.complete ? 'Come back tomorrow.' : 'About 5 to 10 minutes' })),
+      due ? h('a', { class: 'rb-card', href: '#/play/recall' }, h('div', { class: 'kicker', text: 'Memory' }), h('b', { text: due + ' check' + (due > 1 ? 's' : '') + ' due' }), h('span', { class: 'fine', text: 'Quick recall questions' })) : null,
+      A.deferredInstall ? h('button', { class: 'btn ghost small', type: 'button', onclick: () => { A.deferredInstall.prompt(); A.deferredInstall = null; } }, 'Install app') : null
+    ].filter(Boolean);
+    C.clear(el.right).append(...cards);
   };
   let upT = null;
   C.bus.on('complete', () => { clearTimeout(upT); upT = setTimeout(A.updateChrome, 400); });
